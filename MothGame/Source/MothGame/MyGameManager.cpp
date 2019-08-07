@@ -19,11 +19,8 @@ AMyGameManager::AMyGameManager()
 // Called when the game starts or when spawned
 void AMyGameManager::BeginPlay()
 {
-
-
 	Super::BeginPlay();
-	GetWorld()->SpawnActor<AMyAIController>(AMyAIController::StaticClass());
-	GetWorld()->SpawnActor<AMyAICharacter>(AMyAICharacter::StaticClass(), FVector(1000, 1000, 1000), FRotator::ZeroRotator);
+	//GetWorld()->SpawnActor<AMyAIController>(AMyAIController::StaticClass());
 }
 
 // Called every frame

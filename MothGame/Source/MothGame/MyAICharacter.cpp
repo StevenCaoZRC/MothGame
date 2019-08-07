@@ -3,6 +3,9 @@
 
 #include "MyAICharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "Engine/Classes/Animation/AnimBlueprint.h"
+#include "Engine/Classes/GameFramework/Character.h"
+#include "ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -11,6 +14,7 @@
 // Sets default values
 AMyAICharacter::AMyAICharacter()
 {
+
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 

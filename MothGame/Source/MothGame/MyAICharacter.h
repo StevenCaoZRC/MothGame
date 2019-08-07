@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/Classes/Animation/AnimBlueprint.h"
 #include "GameFramework/Character.h"
 #include "MyAICharacter.generated.h"
 
@@ -34,5 +35,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+private:
+	class UAnimBlueprintGeneratedClass* Anim;
+	class USkeletalMesh* Skeleton;
 
 };
