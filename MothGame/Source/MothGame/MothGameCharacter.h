@@ -29,11 +29,27 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	//Walking Variables
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float WalkingSpeed;
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float RunningSpeed;
+	void Tick(float deltaTime);
 protected:
+	/** Called for walk input */
+	void Walk();
+	bool IsWalking;
 
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
-
+	/** Called for dash input */
+	void Dash();
+	void StopDashing();
+	void ResetDash();
+	float DashCooldown;
+	float DashDistance;
+	bool CanDash;
+	float DashStop;
+	FTimerHandle UnusedHandle;
+	
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
@@ -52,11 +68,7 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 protected:
 	// APawn interface
