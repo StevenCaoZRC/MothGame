@@ -14,9 +14,7 @@ AMyAIController::AMyAIController()
 void  AMyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	//m_Baddie = GetWorld()->SpawnActor<AMyAICharacter>(AMyAICharacter::StaticClass(), FVector(-770.002563, 370.000000, 226.001602), FRotator::ZeroRotator);
-	//this->Possess(m_Baddie);
-	MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
 }
 
 void  AMyAIController::Tick(float DeltaTime)
