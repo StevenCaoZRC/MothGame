@@ -24,6 +24,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float fSpeed = 0.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isAttacking = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isDead = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isDying =false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

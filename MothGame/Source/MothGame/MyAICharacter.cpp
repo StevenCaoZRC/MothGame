@@ -48,7 +48,9 @@ void AMyAICharacter::BeginPlay()
 void AMyAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	//fSpeed = GetVelocity().Size();
+	
+	
 }
 
 // Called to bind functionality to input
