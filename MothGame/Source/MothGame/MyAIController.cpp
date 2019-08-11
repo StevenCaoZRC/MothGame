@@ -20,7 +20,6 @@ void  AMyAIController::BeginPlay()
 void  AMyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
 	MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
