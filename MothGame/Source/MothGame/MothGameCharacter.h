@@ -34,6 +34,10 @@ public:
 	float WalkingSpeed;
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float RunningSpeed;
+	//Dashing Boolean for Animaiton and Logic
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool isDashing;
+
 	void Tick(float deltaTime);
 protected:
 	/** Called for walk input */
@@ -44,12 +48,14 @@ protected:
 	void Dash();
 	void StopDashing();
 	void ResetDash();
+	void StopDashAnim();
 	float DashCooldown;
 	float DashDistance;
+	float DashAnimTime;
 	bool CanDash;
 	float DashStop;
 	FTimerHandle UnusedHandle;
-	
+	FTimerHandle AnimHandle;
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 

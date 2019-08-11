@@ -60,7 +60,10 @@ AMothGameCharacter::AMothGameCharacter()
 	DashDistance = 10000.0f;
 	DashCooldown = 1.0f;
 	DashStop = 0.1f;
+	DashAnimTime = 0.25f;
 	CanDash = true;
+	isDashing = false;
+
 }
 
 void AMothGameCharacter::Tick(float deltaTime)
@@ -88,6 +91,7 @@ void AMothGameCharacter::Dash()
 {
 	if (CanDash)
 	{
+		isDashing = true;
 		//Prevents Ground Friction
 		GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 
@@ -97,20 +101,33 @@ void AMothGameCharacter::Dash()
 			true, 
 			true);
 		CanDash = false; //Prevent Spamming
+	
 		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMothGameCharacter::StopDashing, DashStop, false);
+		GetWorldTimerManager().SetTimer(AnimHandle, this, &AMothGameCharacter::StopDashAnim, DashAnimTime, false);
 	}
 }
 
 void AMothGameCharacter::StopDashing()
 {
 	GetCharacterMovement()->StopMovementImmediately();
+	
 	GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMothGameCharacter::ResetDash, DashCooldown, false);
+
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
+
+
+	
 }
 
 void AMothGameCharacter::ResetDash()
 {
 	CanDash = true;
+	//isDashing = false;
+}
+
+void AMothGameCharacter::StopDashAnim()
+{
+	isDashing = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
