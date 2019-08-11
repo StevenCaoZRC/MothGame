@@ -48,7 +48,7 @@ void AMyAICharacter::BeginPlay()
 void AMyAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//fSpeed = GetVelocity().Size();
+	fSpeed = GetVelocity().Size();
 	
 	
 }
