@@ -34,7 +34,7 @@ AMothGameCharacter::AMothGameCharacter()
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1000.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
@@ -64,6 +64,9 @@ AMothGameCharacter::AMothGameCharacter()
 	CanDash = true;
 	isDashing = false;
 
+
+	 dashDirectionY = 1.0f;
+	 dashDirectionX = 1.0f;
 }
 
 void AMothGameCharacter::Tick(float deltaTime)
@@ -92,14 +95,42 @@ void AMothGameCharacter::Dash()
 	if (CanDash)
 	{
 		isDashing = true;
+		
 		//Prevents Ground Friction
 		GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
+	
+		//Attempt at direcitonal dashing
+	
+		dashDirectionX = InputComponent->GetAxisValue("MoveForward");
+		dashDirectionY = InputComponent->GetAxisValue("MoveRight");
+		
+		if (InputComponent->GetAxisKeyValue(FKey("W")) > 0.0f )
+		{
+			LaunchCharacter(FVector(5000, 0, 0), false, false);
+			
+		}
+		else if (InputComponent->GetAxisKeyValue(FKey("S")) < 0.0f)
+		{
+			LaunchCharacter(FVector(-5000, 0, 0), false, false);
+		}
+		else if (dashDirectionY > 0.0f)
+		{
+			LaunchCharacter(FVector(0, 5000, 0), false, false);
+		}
+		else if (dashDirectionY < 0.0f)
+		{
+			LaunchCharacter(FVector(0, -5000, 0), false, false);
+			
+		}
+		
+			//LaunchCharacter(FVector(GetActorForwardVector().X, //X
+			//	GetActorForwardVector().Y,						//Y
+			//	0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+			//	true, 
+			//	true);
 
-		LaunchCharacter(FVector(GetActorForwardVector().X, //X
-			GetActorForwardVector().Y,						//Y
-			0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
-			true, 
-			true);
+		
+			
 		CanDash = false; //Prevent Spamming
 	
 		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMothGameCharacter::StopDashing, DashStop, false);
@@ -174,7 +205,7 @@ void AMothGameCharacter::LookUpAtRate(float Rate)
 
 void AMothGameCharacter::MoveForward(float Value)
 {
-	if ((Controller != NULL) && (Value != 0.0f))
+	if ((Controller != NULL) && (Value != 0.0f) )
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();

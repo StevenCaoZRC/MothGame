@@ -38,6 +38,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	bool isDashing;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+		float dashDirectionY;
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+		float dashDirectionX;
+
 	void Tick(float deltaTime);
 protected:
 	/** Called for walk input */
