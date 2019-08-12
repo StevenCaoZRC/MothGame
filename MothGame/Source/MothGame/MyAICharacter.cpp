@@ -37,7 +37,6 @@ AMyAICharacter::AMyAICharacter()
 	GetCharacterMovement()->AirControl = 0.2f;
 	GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 	GetCharacterMovement()->MaxAcceleration = 250.0f;
-
 }
 
 // Called when the game starts or when spawned

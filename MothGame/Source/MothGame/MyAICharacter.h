@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "MyAICharacter.generated.h"
 
+
 UCLASS()
 class MOTHGAME_API AMyAICharacter : public ACharacter
 {
@@ -15,6 +16,13 @@ class MOTHGAME_API AMyAICharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMyAICharacter();
+
+	enum ENEMYTYPE
+	{
+		BASE = 1,
+		RANGED,
+		HEAVY
+	};
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -28,6 +36,9 @@ public:
 	float fSpeed = 0.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool isAlert = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool isAttacking = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -35,6 +46,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool isDying =false;
+
+	UPROPERTY(EditAnywhere)
+	int iEnemyType;
 
 protected:
 	// Called when the game starts or when spawned

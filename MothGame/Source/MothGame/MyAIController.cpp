@@ -14,13 +14,22 @@ AMyAIController::AMyAIController()
 void  AMyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	m_Baddie = Cast<AMyAICharacter>(GetCharacter());
 }
 
 void  AMyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	if (m_Baddie->isAlert && m_Baddie->iEnemyType != m_Baddie->RANGED)
+	{
+		MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 50.0f);
+	}
+	else
+	{
+		MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 1000.0f);
+	}
+	
 }
 
 void AMyAIController::Move(FVector _move)
