@@ -29,7 +29,11 @@ void  AMyAIController::Tick(float DeltaTime)
 	{
 		MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 1000.0f);
 	}
-	
+
+	if (GetDistanceToPlayer() <= 100.0f)
+	{
+		m_Baddie->isAttacking = true;
+	}
 }
 
 void AMyAIController::Move(FVector _move)
@@ -40,6 +44,12 @@ void AMyAIController::Move(FVector _move)
 void  AMyAIController::Flee(FVector _move)
 {
 
+}
+
+float AMyAIController::GetDistanceToPlayer()
+{
+	FVector Temp = (m_Baddie->GetActorLocation()) - (GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+	return Temp.Size();
 }
 
 

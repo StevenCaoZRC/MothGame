@@ -24,6 +24,8 @@ public:
 	void Flee(FVector _move);
 	//UFUNCTION(BlueprintCallable, Category = "AI")
 	void GetLocation();
+
+	float GetDistanceToPlayer();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -31,7 +33,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
-	FVector AILocation;
+	float fDistance;
 	AMyAICharacter* m_Baddie;
 
 };
