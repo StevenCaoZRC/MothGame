@@ -48,7 +48,17 @@ public:
 	bool isDying =false;
 
 	UPROPERTY(BlueprintReadWrite)
+	bool isPrepared = false;
+
+	UPROPERTY(BlueprintReadWrite)
 	int iEnemyType;
+
+	UPROPERTY(BlueprintReadWrite)
+	float fDistance = 1000.0f;
+
+	float fCurrentInterest = 0.0f;
+
+	float fLoseInterest = 5.0f;
 
 protected:
 	// Called when the game starts or when spawned

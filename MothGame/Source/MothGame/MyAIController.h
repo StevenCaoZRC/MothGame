@@ -19,11 +19,10 @@ class MOTHGAME_API AMyAIController : public AAIController
 public:
 	AMyAIController();
 	//UFUNCTION(BlueprintCallable, Category = "AI")
-	void Move(FVector _move);
+	void Move();
 	//UFUNCTION(BlueprintCallable, Category = "AI")
 	void Flee(FVector _move);
 	//UFUNCTION(BlueprintCallable, Category = "AI")
-	void GetLocation();
 
 	float GetDistanceToPlayer();
 protected:
