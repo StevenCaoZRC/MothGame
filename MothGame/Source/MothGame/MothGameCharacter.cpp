@@ -35,7 +35,7 @@ AMothGameCharacter::AMothGameCharacter()
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1000.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
+	//GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -64,9 +64,9 @@ AMothGameCharacter::AMothGameCharacter()
 	CanDash = true;
 	isDashing = false;
 
-
-	 dashDirectionY = 1.0f;
-	 dashDirectionX = 1.0f;
+	IgnoreMovement = false;
+	dashDirectionY = 1.0f;
+	dashDirectionX = 1.0f;
 }
 
 void AMothGameCharacter::Tick(float deltaTime)
@@ -95,7 +95,7 @@ void AMothGameCharacter::Dash()
 	if (CanDash)
 	{
 		isDashing = true;
-		
+
 		//Prevents Ground Friction
 		GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 	
@@ -103,35 +103,55 @@ void AMothGameCharacter::Dash()
 	
 		dashDirectionX = InputComponent->GetAxisValue("MoveForward");
 		dashDirectionY = InputComponent->GetAxisValue("MoveRight");
-		
-		if (InputComponent->GetAxisKeyValue(FKey("W")) > 0.0f )
+
+		if(dashDirectionX != 0 || dashDirectionY != 0 )
 		{
-			LaunchCharacter(FVector(5000, 0, 0), false, false);
-			
+			if (!IgnoreMovement)
+			{
+				LaunchCharacter(FVector(GetActorForwardVector().X, //X
+					GetActorForwardVector().Y,						//Y
+					0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+			else if (IgnoreMovement && dashDirectionY < 0)
+			{
+				LaunchCharacter(FVector( 0, -GetActorRightVector().Y, //X
+					0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+			else if (IgnoreMovement && dashDirectionY > 0)
+			{
+				LaunchCharacter(FVector(0, //X
+					GetActorRightVector().Y, 0).GetSafeNormal() * DashDistance,				//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+			else if (IgnoreMovement && dashDirectionX > 0)
+			{
+				LaunchCharacter(FVector(GetActorForwardVector().X, //X
+					0, 0).GetSafeNormal() * DashDistance,				//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+
 		}
-		else if (InputComponent->GetAxisKeyValue(FKey("S")) < 0.0f)
+		else if(dashDirectionX == 0 && dashDirectionY == 0)
 		{
-			LaunchCharacter(FVector(-5000, 0, 0), false, false);
+			LaunchCharacter(FVector(-GetActorForwardVector().X, //X
+				-GetActorForwardVector().Y,						//Y
+				0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+				true,
+				true);
 		}
-		else if (dashDirectionY > 0.0f)
-		{
-			LaunchCharacter(FVector(0, 5000, 0), false, false);
-		}
-		else if (dashDirectionY < 0.0f)
-		{
-			LaunchCharacter(FVector(0, -5000, 0), false, false);
-			
-		}
-		
-			//LaunchCharacter(FVector(GetActorForwardVector().X, //X
-			//	GetActorForwardVector().Y,						//Y
-			//	0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
-			//	true, 
-			//	true);
 
 		
-			
-		CanDash = false; //Prevent Spamming
+		
+
+			//Prevent Spamming
+		CanDash = false;
+		
 	
 		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMothGameCharacter::StopDashing, DashStop, false);
 		GetWorldTimerManager().SetTimer(AnimHandle, this, &AMothGameCharacter::StopDashAnim, DashAnimTime, false);
@@ -168,13 +188,9 @@ void AMothGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMothGameCharacter::Dash);
-
 	PlayerInputComponent->BindAction("Walk", IE_Pressed, this, &AMothGameCharacter::Walk);
-	
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMothGameCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMothGameCharacter::MoveRight);
@@ -194,6 +210,7 @@ void AMothGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 void AMothGameCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
+	
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
@@ -207,13 +224,17 @@ void AMothGameCharacter::MoveForward(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f) )
 	{
+
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+		if (!IgnoreMovement)
+		{
+			AddMovementInput(Direction, Value);
+		}
 	}
 }
 
@@ -223,11 +244,15 @@ void AMothGameCharacter::MoveRight(float Value)
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator YawRotation(0, Rotation.Yaw,0);
 	
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		if(!IgnoreMovement)
+		{
+			AddMovementInput(Direction, Value);
+		}
+		
 	}
 }

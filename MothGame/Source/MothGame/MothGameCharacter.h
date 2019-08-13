@@ -42,6 +42,8 @@ public:
 		float dashDirectionY;
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 		float dashDirectionX;
+	UPROPERTY(BlueprintReadWrite, Category = "Movement")
+	bool IgnoreMovement;
 
 	void Tick(float deltaTime);
 protected:
