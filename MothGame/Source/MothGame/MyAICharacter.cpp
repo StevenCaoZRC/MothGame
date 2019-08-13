@@ -50,16 +50,7 @@ void AMyAICharacter::Tick(float DeltaTime)
 {
 	fSpeed = GetVelocity().Size();
 
-	if ((isAttacking == false) && (isAlert == true))
-	{
-		fCurrentInterest = fCurrentInterest + DeltaTime;
-
-		if (fCurrentInterest >= fLoseInterest)
-		{
-			isAlert = false;
-			fCurrentInterest = 0.0f;
-		}
-	}
+	
 	Super::Tick(DeltaTime);
 }
 
@@ -69,5 +60,32 @@ void AMyAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AMyAICharacter::DamageEnemy(float _fDam)
+{
+	fHealth = fHealth - _fDam;
+}
+
+void AMyAICharacter::CheckAlive()
+{
+	if (fHealth <= 0.0f)
+	{
+		isDying = true;
+	}
+}
+
+void AMyAICharacter::CheckInterest(float _Delta)
+{
+	if ((isAttacking == false) && (isAlert == true))
+	{
+		fCurrentInterest = fCurrentInterest + _Delta;
+
+		if (fCurrentInterest >= fLoseInterest)
+		{
+			isAlert = false;
+			fCurrentInterest = 0.0f;
+		}
+	}
 }
 

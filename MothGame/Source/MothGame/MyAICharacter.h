@@ -32,6 +32,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
+	UFUNCTION(BlueprintCallable)
+	void DamageEnemy(float _fDam);
+
+	void CheckAlive();
+
+	void CheckInterest(float _Delta);
+
 	UPROPERTY(BlueprintReadWrite)
 	float fSpeed = 0.0f;
 
@@ -55,6 +62,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	float fDistance = 1000.0f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float fHealth = 100.0f;
 
 	float fCurrentInterest = 0.0f;
 
