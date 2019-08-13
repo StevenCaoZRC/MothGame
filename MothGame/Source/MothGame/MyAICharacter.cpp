@@ -49,7 +49,7 @@ void AMyAICharacter::BeginPlay()
 void AMyAICharacter::Tick(float DeltaTime)
 {
 	fSpeed = GetVelocity().Size();
-
+	CheckInterest(DeltaTime);
 	
 	Super::Tick(DeltaTime);
 }
@@ -85,6 +85,7 @@ void AMyAICharacter::CheckInterest(float _Delta)
 		{
 			isAlert = false;
 			fCurrentInterest = 0.0f;
+			GetCharacterMovement()->MaxWalkSpeed = 100.0f;
 		}
 	}
 }
