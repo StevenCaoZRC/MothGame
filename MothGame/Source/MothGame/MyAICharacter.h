@@ -40,10 +40,16 @@ public:
 	void CheckInterest(float _Delta);
 
 	UPROPERTY(BlueprintReadWrite)
+	FVector vecOPos;
+
+	UPROPERTY(BlueprintReadWrite)
 	float fSpeed = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool isAlert = true;
+	bool isAlert = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool isHit = false;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool isAttacking = false;

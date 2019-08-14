@@ -43,6 +43,7 @@ AMyAICharacter::AMyAICharacter()
 void AMyAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	vecOPos = GetActorLocation();
 }
 
 // Called every frame
@@ -65,6 +66,9 @@ void AMyAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AMyAICharacter::DamageEnemy(float _fDam)
 {
 	fHealth = fHealth - _fDam;
+	isAlert = true;
+	isHit = true;
+	
 }
 
 void AMyAICharacter::CheckAlive()
@@ -77,7 +81,7 @@ void AMyAICharacter::CheckAlive()
 
 void AMyAICharacter::CheckInterest(float _Delta)
 {
-	if ((isAttacking == false) && (isAlert == true))
+	if ((isAttacking == false) && (isAlert == true) && (isPrepared == false))
 	{
 		fCurrentInterest = fCurrentInterest + _Delta;
 
@@ -85,8 +89,12 @@ void AMyAICharacter::CheckInterest(float _Delta)
 		{
 			isAlert = false;
 			fCurrentInterest = 0.0f;
-			GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+			//GetCharacterMovement()->MaxWalkSpeed = 50.0f;
 		}
+	}
+	else
+	{
+		fCurrentInterest = 0.0f;
 	}
 }
 
