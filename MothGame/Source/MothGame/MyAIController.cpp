@@ -42,7 +42,7 @@ void AMyAIController::Move()
 	{
 		m_Baddie->isAttacking = true;
 		FString Temp = FString::SanitizeFloat(fDistance);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" FUCK ")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" FUCK ")));
 	}
 }
 
