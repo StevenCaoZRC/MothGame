@@ -15,38 +15,37 @@ void  AMyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	m_Baddie = Cast<AMyAICharacter>(GetCharacter());
-	//fDistance = GetDistanceToPlayer();
+	fDistance = GetDistanceToPlayer();
 }
 
 void  AMyAIController::Tick(float DeltaTime)
 {
-	fDistance = GetDistanceToPlayer();
-
-	
-	Move();
-
-	WithinVision();
 	Super::Tick(DeltaTime);
+
+	fDistance = GetDistanceToPlayer();
+	Move();
+	WithinVision();
 	
 }
 
 void AMyAIController::Move()
 {
-	
+	if (GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (m_Baddie->isAlert && m_Baddie->iEnemyType != m_Baddie->RANGED && !m_Baddie->isAttacking && !m_Baddie->isDying && !m_Baddie->isDead && !m_Baddie->isHit)
+		{
+			MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 50.0f);
+		}
+		else if (m_Baddie->isAlert && m_Baddie->iEnemyType == m_Baddie->RANGED && !m_Baddie->isAttacking && !m_Baddie->isDying && !m_Baddie->isDead && !m_Baddie->isHit)
+		{
+			MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 1000.0f);
+		}
 
-	if (m_Baddie->isAlert && m_Baddie->iEnemyType != m_Baddie->RANGED && !m_Baddie->isAttacking &&!m_Baddie->isDying &&!m_Baddie->isDead &&!m_Baddie->isHit)
-	{
-		MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 50.0f);
-	}
-	else if (m_Baddie->isAlert && m_Baddie->iEnemyType == m_Baddie->RANGED && !m_Baddie->isAttacking && !m_Baddie->isDying && !m_Baddie->isDead && !m_Baddie->isHit)
-	{
-		MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 1000.0f);
-	}
-
-	if (fDistance < 200.0f && m_Baddie->isAlert == true && !m_Baddie->isAttacking &&!m_Baddie->isHit && !m_Baddie->isDying && !m_Baddie->isDead) //&& //!m_Baddie->isPrepared)
-	{
-		m_Baddie->isAttacking = true;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" FUCK ")));
+		if (fDistance < 200.0f && m_Baddie->isAlert == true && !m_Baddie->isAttacking && !m_Baddie->isHit && !m_Baddie->isDying && !m_Baddie->isDead) //&& //!m_Baddie->isPrepared)
+		{
+			m_Baddie->isAttacking = true;
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" FUCK ")));
+		}
 	}
 }
 
@@ -78,8 +77,12 @@ void  AMyAIController::Flee(FVector _move)
 
 float AMyAIController::GetDistanceToPlayer()
 {
-	FVector Temp = m_Baddie->GetActorLocation() - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	m_Baddie->fDistance = Temp.Size();
+	FVector Temp;
+	if (GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		Temp = m_Baddie->GetActorLocation() - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+		m_Baddie->fDistance = Temp.Size();
+	}
 	return Temp.Size();
 }
 
