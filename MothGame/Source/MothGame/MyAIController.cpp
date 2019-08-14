@@ -22,10 +22,9 @@ void  AMyAIController::Tick(float DeltaTime)
 {
 	fDistance = GetDistanceToPlayer();
 
-	if (fDistance > 200.0f)
-	{
-		Move();
-	}
+	
+	Move();
+
 	WithinVision();
 	Super::Tick(DeltaTime);
 	
