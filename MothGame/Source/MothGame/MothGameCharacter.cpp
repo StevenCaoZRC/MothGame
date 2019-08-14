@@ -16,7 +16,7 @@ AMothGameCharacter::AMothGameCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
+	GetCapsuleComponent()->SetWorldRotation(FQuat(0.0f, 0.0f, 0.0f, 0.0f));
 	// Set up Update Funciton
 	SetActorTickEnabled(true);
 	PrimaryActorTick.bCanEverTick = true;
@@ -34,8 +34,8 @@ AMothGameCharacter::AMothGameCharacter()
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1000.0f, 0.0f); // ...at this rotation rate
+	//GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -60,7 +60,24 @@ AMothGameCharacter::AMothGameCharacter()
 	DashDistance = 10000.0f;
 	DashCooldown = 1.0f;
 	DashStop = 0.1f;
+	DashAnimTime = 0.25f;
 	CanDash = true;
+	isDashing = false;
+
+	IgnoreMovement = false;
+	dashDirectionY = 1.0f;
+	dashDirectionX = 1.0f;
+
+	
+}
+
+void AMothGameCharacter::TakeDamage(float AmountOfDmg)
+{
+	CurrentHealth -= AmountOfDmg;
+	if (CurrentHealth <= 0.0f)
+	{
+		CurrentHealth = 0.0f;
+	}
 }
 
 void AMothGameCharacter::Tick(float deltaTime)
@@ -88,29 +105,91 @@ void AMothGameCharacter::Dash()
 {
 	if (CanDash)
 	{
+		isDashing = true;
+
 		//Prevents Ground Friction
 		GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
+	
+		//Attempt at direcitonal dashing
+	
+		dashDirectionX = InputComponent->GetAxisValue("MoveForward");
+		dashDirectionY = InputComponent->GetAxisValue("MoveRight");
 
-		LaunchCharacter(FVector(GetActorForwardVector().X, //X
-			GetActorForwardVector().Y,						//Y
-			0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
-			true, 
-			true);
-		CanDash = false; //Prevent Spamming
+		if(dashDirectionX != 0 || dashDirectionY != 0 )
+		{
+			if (!IgnoreMovement)
+			{
+				LaunchCharacter(FVector(GetActorForwardVector().X, //X
+					GetActorForwardVector().Y,						//Y
+					0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+			else if (IgnoreMovement && dashDirectionY < 0)
+			{
+				LaunchCharacter(FVector( 0, -GetActorRightVector().Y, //X
+					0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+			else if (IgnoreMovement && dashDirectionY > 0)
+			{
+				LaunchCharacter(FVector(0, //X
+					GetActorRightVector().Y, 0).GetSafeNormal() * DashDistance,				//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+			else if (IgnoreMovement && dashDirectionX > 0)
+			{
+				LaunchCharacter(FVector(GetActorForwardVector().X, //X
+					0, 0).GetSafeNormal() * DashDistance,				//Z This is prevent Dashing Upwards
+					true,
+					true);
+			}
+
+		}
+		else if(dashDirectionX == 0 && dashDirectionY == 0)
+		{
+			LaunchCharacter(FVector(-GetActorForwardVector().X, //X
+				-GetActorForwardVector().Y,						//Y
+				0).GetSafeNormal() * DashDistance,						//Z This is prevent Dashing Upwards
+				true,
+				true);
+		}
+
+		
+		
+
+			//Prevent Spamming
+		CanDash = false;
+		
+	
 		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMothGameCharacter::StopDashing, DashStop, false);
+		GetWorldTimerManager().SetTimer(AnimHandle, this, &AMothGameCharacter::StopDashAnim, DashAnimTime, false);
 	}
 }
 
 void AMothGameCharacter::StopDashing()
 {
 	GetCharacterMovement()->StopMovementImmediately();
+	
 	GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMothGameCharacter::ResetDash, DashCooldown, false);
+
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
+
+
+	
 }
 
 void AMothGameCharacter::ResetDash()
 {
 	CanDash = true;
+	//isDashing = false;
+}
+
+void AMothGameCharacter::StopDashAnim()
+{
+	isDashing = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,13 +199,9 @@ void AMothGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMothGameCharacter::Dash);
-
 	PlayerInputComponent->BindAction("Walk", IE_Pressed, this, &AMothGameCharacter::Walk);
-	
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMothGameCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMothGameCharacter::MoveRight);
@@ -146,6 +221,7 @@ void AMothGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 void AMothGameCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
+	
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
@@ -157,15 +233,19 @@ void AMothGameCharacter::LookUpAtRate(float Rate)
 
 void AMothGameCharacter::MoveForward(float Value)
 {
-	if ((Controller != NULL) && (Value != 0.0f))
+	if ((Controller != NULL) && (Value != 0.0f) )
 	{
+
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+		if (!IgnoreMovement)
+		{
+			AddMovementInput(Direction, Value);
+		}
 	}
 }
 
@@ -175,11 +255,15 @@ void AMothGameCharacter::MoveRight(float Value)
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator YawRotation(0, Rotation.Yaw,0);
 	
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		if(!IgnoreMovement)
+		{
+			AddMovementInput(Direction, Value);
+		}
+		
 	}
 }

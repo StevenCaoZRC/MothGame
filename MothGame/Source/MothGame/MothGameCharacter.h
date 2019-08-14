@@ -28,12 +28,28 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
-
 	//Walking Variables
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float WalkingSpeed;
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float RunningSpeed;
+	//Dashing Boolean for Animaiton and Logic
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool isDashing;
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float dashDirectionY;
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float dashDirectionX;
+	UPROPERTY(BlueprintReadWrite, Category = "Movement")
+	bool IgnoreMovement;
+	UPROPERTY(BlueprintReadWrite, Category = "Health")
+	float CurrentHealth;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Health")
+		bool pIsDead;
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void TakeDamage(float AmountOfDmg);
+
 	void Tick(float deltaTime);
 protected:
 	/** Called for walk input */
@@ -44,12 +60,14 @@ protected:
 	void Dash();
 	void StopDashing();
 	void ResetDash();
+	void StopDashAnim();
 	float DashCooldown;
 	float DashDistance;
+	float DashAnimTime;
 	bool CanDash;
 	float DashStop;
 	FTimerHandle UnusedHandle;
-	
+	FTimerHandle AnimHandle;
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
