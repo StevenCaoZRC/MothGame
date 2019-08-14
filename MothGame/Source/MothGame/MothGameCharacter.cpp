@@ -67,6 +67,17 @@ AMothGameCharacter::AMothGameCharacter()
 	IgnoreMovement = false;
 	dashDirectionY = 1.0f;
 	dashDirectionX = 1.0f;
+
+	
+}
+
+void AMothGameCharacter::TakeDamage(float AmountOfDmg)
+{
+	CurrentHealth -= AmountOfDmg;
+	if (CurrentHealth <= 0.0f)
+	{
+		CurrentHealth = 0.0f;
+	}
 }
 
 void AMothGameCharacter::Tick(float deltaTime)
