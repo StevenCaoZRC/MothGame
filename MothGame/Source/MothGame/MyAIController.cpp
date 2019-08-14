@@ -59,7 +59,7 @@ void AMyAIController::WithinVision()
 		FVector Start = m_Baddie->GetActorLocation();
 		FVector LineStart = (m_Baddie->GetActorForwardVector() * 200) + Start;
 		FVector LineEnd = LineStart + (m_Baddie->GetActorForwardVector() * 500.0f);
-		DrawDebugLine(GetWorld(), LineStart, LineEnd, FColor::Green, true, 2.0f, false, 4.0f);
+		//DrawDebugLine(GetWorld(), LineStart, LineEnd, FColor::Green, true, 2.0f, false, 4.0f);
 		
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, LineStart, LineEnd, ECC_WorldDynamic, CollisionParams);
 

@@ -49,10 +49,10 @@ void AMyAICharacter::BeginPlay()
 // Called every frame
 void AMyAICharacter::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	fSpeed = GetVelocity().Size();
 	CheckInterest(DeltaTime);
-	
-	Super::Tick(DeltaTime);
+	CheckAlive();
 }
 
 // Called to bind functionality to input
