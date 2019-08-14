@@ -16,7 +16,7 @@ AMothGameCharacter::AMothGameCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
+	GetCapsuleComponent()->SetWorldRotation(FQuat(0.0f, 0.0f, 0.0f, 0.0f));
 	// Set up Update Funciton
 	SetActorTickEnabled(true);
 	PrimaryActorTick.bCanEverTick = true;
