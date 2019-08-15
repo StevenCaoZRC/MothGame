@@ -21,7 +21,7 @@ AMyEnemyAttack::AMyEnemyAttack()
 	PrimaryActorTick.bCanEverTick = true;
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-	CollisionComp->InitSphereRadius(50.0f);
+	CollisionComp->InitSphereRadius(100.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("ESmack");
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMyEnemyAttack::Hit);// set up a notification for when this component hits something blocking
 
