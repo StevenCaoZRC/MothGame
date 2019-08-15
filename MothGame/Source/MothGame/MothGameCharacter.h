@@ -45,6 +45,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Health")
 	float CurrentHealth;
 	
+	UPROPERTY(BlueprintReadWrite, Category = "Health")
+		bool pIsDead;
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void TakeDamage(float AmountOfDmg);
 
