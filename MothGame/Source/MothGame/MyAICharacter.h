@@ -55,6 +55,9 @@ public:
 	bool isAttacking = false;
 
 	UPROPERTY(BlueprintReadWrite)
+	bool isRangedAttacking = false;
+
+	UPROPERTY(BlueprintReadWrite)
 	bool isDead = false;
 
 	UPROPERTY(BlueprintReadWrite)

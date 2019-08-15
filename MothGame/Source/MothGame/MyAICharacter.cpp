@@ -81,7 +81,7 @@ void AMyAICharacter::CheckAlive()
 
 void AMyAICharacter::CheckInterest(float _Delta)
 {
-	if ((isAttacking == false) && (isAlert == true) && (isPrepared == false))
+	if ((isAttacking == false) && (isAlert == true) && (isPrepared == false) && (isRangedAttacking == false))
 	{
 		fCurrentInterest = fCurrentInterest + _Delta;
 
