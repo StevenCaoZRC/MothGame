@@ -3,6 +3,7 @@
 
 #include "MyEnemyAttack.h"
 #include "MyAICharacter.h"
+#include "MothGameCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Engine/Engine.h"
 #include "Engine/Classes/GameFramework/Actor.h"
@@ -59,6 +60,7 @@ void AMyEnemyAttack::Hit(class UPrimitiveComponent* OverLappedComponent, AActor*
 	if (OtherActor == GetWorld()->GetFirstPlayerController()->GetPawn())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collision!")));
+		Cast<AMothGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->TakeDamage(10);
 		Destroy();
 	}
 	

@@ -36,5 +36,7 @@ public:
 
 private:
 	float iDamage;
+	float DespawnTime;
+	float MaxDespawnTime = 10.0f;
 
 };

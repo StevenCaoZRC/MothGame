@@ -2,7 +2,9 @@
 
 
 #include "MyEnemyRangedAttack.h"
+#include "Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "MyAICharacter.h"
+#include "MothGameCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Engine/Engine.h"
 #include "Engine/Classes/GameFramework/Actor.h"
@@ -45,29 +47,36 @@ void AMyEnemyRangedAttack::BeginPlay()
 	
 	FVector ProjLoc = this->GetActorLocation();
 	FVector PlayerLoc = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	//FRotator ERot = UKisMathLibrary
-	
+	FRotator ERot = UKismetMathLibrary::FindLookAtRotation(ProjLoc, PlayerLoc);
+	this->SetActorRotation(ERot);
 }
 
 // Called every frame
 void AMyEnemyRangedAttack::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	DespawnTime = DespawnTime + DeltaTime;
+
+	if (DespawnTime >= MaxDespawnTime)
+	{
+		Destroy();
+	}
+
+	FVector Movement = this->GetActorForwardVector() * 10.0f;
+	this->SetActorLocation(Movement + this->GetActorLocation());
 
 }
 
 void AMyEnemyRangedAttack::Hit(class UPrimitiveComponent* OverLappedComponent, AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	
+
 	if (OtherActor == GetWorld()->GetFirstPlayerController()->GetPawn())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collision!")));
 		Destroy();
+		Cast<AMothGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->TakeDamage(10);
 	}
-
-	if (OtherActor != NULL)
-	{
-		Destroy();
-	}
-
+	
 }
 
