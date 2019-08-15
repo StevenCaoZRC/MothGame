@@ -38,7 +38,7 @@ void AMyAIController::Move()
 		}
 		else if (m_Baddie->isAlert && m_Baddie->iEnemyType == m_Baddie->RANGED && !m_Baddie->isAttacking && !m_Baddie->isDying && !m_Baddie->isDead && !m_Baddie->isHit)
 		{
-			MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 1000.0f);
+			MoveToActor(GetWorld()->GetFirstPlayerController()->GetPawn(), 50.0f);
 		}
 
 		if (fDistance < 200.0f && m_Baddie->isAlert == true && !m_Baddie->isAttacking && !m_Baddie->isHit && !m_Baddie->isDying && !m_Baddie->isDead) //&& //!m_Baddie->isPrepared)

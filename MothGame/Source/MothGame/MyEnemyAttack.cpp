@@ -3,6 +3,7 @@
 
 #include "MyEnemyAttack.h"
 #include "MyAICharacter.h"
+#include "MothGameCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Engine/Engine.h"
 #include "Engine/Classes/GameFramework/Actor.h"
@@ -20,7 +21,7 @@ AMyEnemyAttack::AMyEnemyAttack()
 	PrimaryActorTick.bCanEverTick = true;
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-	CollisionComp->InitSphereRadius(50.0f);
+	CollisionComp->InitSphereRadius(100.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("ESmack");
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMyEnemyAttack::Hit);// set up a notification for when this component hits something blocking
 
@@ -59,6 +60,7 @@ void AMyEnemyAttack::Hit(class UPrimitiveComponent* OverLappedComponent, AActor*
 	if (OtherActor == GetWorld()->GetFirstPlayerController()->GetPawn())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collision!")));
+		Cast<AMothGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->TakeDamage(10);
 		Destroy();
 	}
 	
