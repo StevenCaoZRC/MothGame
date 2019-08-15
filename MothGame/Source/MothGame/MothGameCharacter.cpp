@@ -57,7 +57,7 @@ AMothGameCharacter::AMothGameCharacter()
 	RunningSpeed = 1000.0f;
 	IsWalking = false;
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
-	DashDistance = 10000.0f;
+	DashDistance = 3500.0f;
 	DashCooldown = 1.0f;
 	DashStop = 0.1f;
 	DashAnimTime = 0.25f;
